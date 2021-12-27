@@ -1,0 +1,12 @@
+---
+- name: Preparing Workstation
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - block:
+      - name: install snap packages
+        become: yes
+        shell: snap install "{{ item }}" --stable
+        loop:
+          - spotify

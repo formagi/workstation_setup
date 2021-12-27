@@ -41,6 +41,25 @@
         update_cache: yes
 
     - block:
+      - name: install snap packages
+        become: yes
+        shell: snap install "{{ item }}" --stable
+        loop:
+          - todoist
+          - discord
+
+    - block:
+      - name: Install EURKEY layout, DropBox, 4kDownload and Zoom
+        become: true
+        apt:
+          deb: "{{ item }}"
+        loop:
+          - https://eurkey.steffen.bruentjen.eu/download/debian/binary/eurkey.deb
+          - https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb
+          - https://dl.4kdownload.com/app/4kvideodownloader_4.18.5-1_amd64.deb
+          - https://zoom.us/client/latest/zoom_amd64.deb
+
+    - block:
       - name: Verify if Oh-My-zsh is installed
         command: test -d /home/{{ ansible_user_id }}/.oh-my-zsh
         register: ohmyzsh
@@ -237,12 +256,12 @@
       - name: Creating ZSH Completion  
         file:
           src: '/opt/kubectx/completion/{{ item }}'
-          dest: '/home/{{ ansible_user_id }}/.oh-my-zsh/completions/_{{ item }}'
+          dest: '/home/{{ ansible_user_id }}/.oh-my-zsh/completions/{{ item }}'
           state: link
         with_items:
-          - kubectx.zsh
-          - kubens.zsh 
-          
+          - _kubectx.zsh
+          - _kubens .zsh
+      
     - block:
       - name: Install obsproject Ubuntu Repo
         become: true
